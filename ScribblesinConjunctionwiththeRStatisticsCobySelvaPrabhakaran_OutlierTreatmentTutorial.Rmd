@@ -67,7 +67,66 @@ library(kableExtra)
 
 
 
-### 1.0 Outlier Treatment
+# Setting Working Directory
+```{r}
+# Fetch Data ------------------------------
+
+url <- "http://aqsdr1.epa.gov/aqsweb/aqstmp/airdata/hourly_44201_2014.zip"
+
+if (!dir.exists("./data")) { dir.create("./data") }
+
+if (!file.exists("./data/hourly_44201_2014.zip")) {
+  download.file(url, "./data/hourly_44201_2014.zip", quiet = TRUE)
+}
+
+unzip("./data/hourly_44201_2014.zip", exdir = "./data")
+
+# Read data ------------------------------
+# col types derived from http://aqsdr1.epa.gov/aqsweb/aqstmp/airdata/FileFormats.html
+
+
+ozone <- read_csv("data/hourly_44201_2014.csv", 
+                  col_types = "ccccinnccccccnccnccccccc")
+
+
+# clean up names
+names(ozone) <- make.names(names(ozone))
+
+# Fri Sep 18 08:12:58 2015 ------------------------------
+# Verify data
+
+nrow(ozone)
+
+ncol(ozone)
+
+str(ozone)
+
+glimpse(ozone)
+
+head(ozone[, c(6:7, 10)])
+
+tail(ozone[, c(6:7, 10)])
+
+
+# Examine data  ------------------------------
+head(table(ozone$Time.Local))
+
+filter(ozone, Time.Local =="02:00") %>% 
+  select(State.Name, County.Name, Date.Local, Time.Local, Sample.Measurement)
+
+ozone %>% 
+  filter(County.Name=="King" & State.Name=="Washington" & Date.Local=="2014-09-30") %>% 
+  select(Date.Local, Time.Local, Sample.Measurement) %>% 
+  as.data.frame
+
+```
+
+
+
+
+
+
+# 1.0 Outlier Treatment
 Outliers in data can distort predictions and affect the accuracy, 
 if you don’t detect and handle them appropriately especially in regression models.
 
@@ -119,6 +178,21 @@ abline(lm(dist ~ speed, data=cars1), col="blue", lwd=3, lty=2)
 
 Notice the change in slope of the best fit line after removing the outliers. Had we used the outliers to train the model(left chart), our predictions would be exagerated (high error) for larger values of speed because of the larger slope.
 
+
+# 2.0 Detect outliers
+
+## 2.1 Univariate approach
+For a given continuous variable, outliers are those observations that lie outside 1.5 * IQR, where IQR, the ‘Inter Quartile Range’ is the difference between 75th and 25th quartiles. Look at the points outside the whiskers in below box plot.
+
+```{r 2.1 }
+url <- "http://rstatistics.net/wp-content/uploads/2015/09/ozone.csv"  
+# alternate source:  https://raw.githubusercontent.com/selva86/datasets/master/ozone.csv
+inputData <- read.csv(url)  # import data
+
+outlier_values <- boxplot.stats(inputData$pressure_height)$out  # outlier values.
+boxplot(inputData$pressure_height, main="Pressure Height", boxwex=0.1)
+mtext(paste("Outliers: ", paste(outlier_values, collapse=", ")), cex=0.6)
+```
 
 
 
