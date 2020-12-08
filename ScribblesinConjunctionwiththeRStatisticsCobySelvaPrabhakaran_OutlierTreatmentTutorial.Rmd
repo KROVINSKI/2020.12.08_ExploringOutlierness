@@ -67,11 +67,11 @@ library(kableExtra)
 
 
 
-# Outlier Treatment
+### 1.0 Outlier Treatment
 Outliers in data can distort predictions and affect the accuracy, 
 if you don’t detect and handle them appropriately especially in regression models.
 
-# Why outliers detection is important?
+### 1.1 Why outliers detection is important?
 Treating or altering the outlier/extreme values in genuine observations 
 is not a standard operating procedure. However, it is essential to 
 understand their impact on your predictive models. It is left to the 
@@ -88,8 +88,8 @@ and without outliers. In order to distinguish the effect clearly,
 I manually introduce extreme values to the original cars dataset. Then, 
 I predict on both the datasets.
 
-# 1. Inject outliers into data.
-```{r # 1. Inject outliers into data.}
+### 1.2 Inject outliers into data.
+```{r # 1.2 Inject outliers into data.}
 # Inject outliers into data.
 cars1 <- cars[1:30, ]  # original data
 cars_outliers <- data.frame(speed=c(19,19,20,20,20), dist=c(190, 186, 210, 220, 218))  # introduce outliers.
@@ -98,8 +98,8 @@ cars2 <- rbind(cars1, cars_outliers)  # data with outliers.
 
 
 
-# 2. Plot of data with outliers
-```{r 2. Plot of data with outliers}
+### 1.3 Plot of data with outliers
+```{r 1.3 Plot of data with outliers}
 # Plot of data with outliers.
 par(mfrow=c(1, 2))
 plot(cars2$speed, cars2$dist, xlim=c(0, 28), ylim=c(0, 230), main="With Outliers", xlab="speed", ylab="dist", pch="*", col="red", cex=2)
@@ -108,8 +108,8 @@ abline(lm(dist ~ speed, data=cars2), col="blue", lwd=3, lty=2)
 
 
 
-# 3. Plot of original data without outliers
-```{r 3. Plot of original data without outliers}
+### 1.4 Plot of original data without outliers
+```{r 1.4 Plot of original data without outliers}
 # Plot of original data without outliers. Note the change in slope (angle) of best fit line.
 plot(cars1$speed, cars1$dist, xlim=c(0, 28), ylim=c(0, 230), main="Outliers removed \n A much better fit!", xlab="speed", ylab="dist", pch="*", col="red", cex=2)
 abline(lm(dist ~ speed, data=cars1), col="blue", lwd=3, lty=2)
@@ -117,7 +117,7 @@ abline(lm(dist ~ speed, data=cars1), col="blue", lwd=3, lty=2)
 
 
 
-
+Notice the change in slope of the best fit line after removing the outliers. Had we used the outliers to train the model(left chart), our predictions would be exagerated (high error) for larger values of speed because of the larger slope.
 
 
 
