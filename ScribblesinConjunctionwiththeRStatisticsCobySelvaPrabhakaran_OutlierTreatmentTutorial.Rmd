@@ -68,57 +68,13 @@ library(kableExtra)
 
 
 # Setting Working Directory
-```{r}
-# Fetch Data ------------------------------
+```{r. Setting Working Directory }
+#*********************************
+## Setting Working Directory
+#*********************************
 
-url <- "http://aqsdr1.epa.gov/aqsweb/aqstmp/airdata/hourly_44201_2014.zip"
-
-if (!dir.exists("./data")) { dir.create("./data") }
-
-if (!file.exists("./data/hourly_44201_2014.zip")) {
-  download.file(url, "./data/hourly_44201_2014.zip", quiet = TRUE)
-}
-
-unzip("./data/hourly_44201_2014.zip", exdir = "./data")
-
-# Read data ------------------------------
-# col types derived from http://aqsdr1.epa.gov/aqsweb/aqstmp/airdata/FileFormats.html
-
-
-ozone <- read_csv("data/hourly_44201_2014.csv", 
-                  col_types = "ccccinnccccccnccnccccccc")
-
-
-# clean up names
-names(ozone) <- make.names(names(ozone))
-
-# Fri Sep 18 08:12:58 2015 ------------------------------
-# Verify data
-
-nrow(ozone)
-
-ncol(ozone)
-
-str(ozone)
-
-glimpse(ozone)
-
-head(ozone[, c(6:7, 10)])
-
-tail(ozone[, c(6:7, 10)])
-
-
-# Examine data  ------------------------------
-head(table(ozone$Time.Local))
-
-filter(ozone, Time.Local =="02:00") %>% 
-  select(State.Name, County.Name, Date.Local, Time.Local, Sample.Measurement)
-
-ozone %>% 
-  filter(County.Name=="King" & State.Name=="Washington" & Date.Local=="2014-09-30") %>% 
-  select(Date.Local, Time.Local, Sample.Measurement) %>% 
-  as.data.frame
-
+#set working directory to the correct folder
+setwd("/Users/katherinerovinski/GIT/2020.12.08_ExploringOutlierness")
 ```
 
 
